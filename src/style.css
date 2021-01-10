@@ -9,14 +9,12 @@ body{
     background-color: rgb(37, 51, 66);
 }
 .card{
-    cursor: pointer;
-    border: solid 1px;
     border-radius: 20px;
     background-color:var(--github-header-color);
     box-shadow:   10px 10px 20px #1a232e,
     -10px -10px 20px #304356;
 }
-.card-body, .navbar a{
+.card-body, .navbar a {
     color: aliceblue;
 }
 .card img{
@@ -25,4 +23,7 @@ body{
     border-radius: 50%;
     width: 90%;
     margin:4px auto;
+}
+#cards a{
+   text-decoration: none;
 }
