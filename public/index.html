@@ -34,42 +34,49 @@
     <div id="modal" class="modal fade " tabindex="-1" role="dialog">
         <div class="modal-dialog modal-fullscreen" role="document">
             <div class="modal-content">
-                <div class="modal-header text-center">
+                <div class="modal-header">
                     <h5 class="modal-title"></h5>
                     <button onclick="cleanTbody()" id="closeButton" type="button" class="btn btn-danger"
                         data-bs-dismiss="modal"><span>x</span></button>
                 </div>
                 <div class="modal-body">
-                    <div class="container-fluid">
+                    <div class="container-fluid text-center">
                         <div class="row">
-                            <div class="col-3 offset-sm-3">
-
-                                <table class="table caption-top">
+                            <div class="col-5 offset-sm-1 ">
+                                <table class="table table-hover table-dark caption-top">
                                     <thead class="tableHeader">
                                         <tr>
-                                            <th scope="col "> <img src="/images/GitHub-Mark-Light-32px.png" alt=""
+                                            <th scope="col "> <img src="/images/GitHub-Mark-Light-32px.png" alt="github logo"
                                                     width="32" height="32" class="d-inline-block align-top"></th>
                                             <th scope="col">Contribuições</th>
                                             <th scope="col">github</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tbodyContributors">
+                        
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="col-3">
-                                <table class="table caption-top">
-
-                                    <thead class="tableHeader">
-                                        <tr class="">
-                                            <th scope="col"> <img src="/images/GitHub-Mark-Light-32px.png" alt=""
+                            <div id="contentIssues" class="col-5">
+                                <table class="table table-hover table-dark caption-top">
+                                    <thead class="tableHeader ">
+                                        <tr class="col">
+                                            <th scope="col-3"> <img src="/images/GitHub-Mark-Light-32px.png" alt="github logo"
                                                     width="32" height="32" class="d-inline-block align-top"></th>
-                                            <th scope="col">Issues</th>
-                                            <th scope="col">Status</th>
+                                            <th scope="col-3">Issues</th>
+                                            <th scope="col-3">
+                                                <div class="input-group-sm ">
+                                                    <select onchange="issueVisibility()" id="selectButton" class="form-select small "
+                                                       width="300px">
+                                                        <option selected>selecione</option>
+                                                        <option value="open">open</option>
+                                                        <option value="closed">closed</option>
+                                                    </select>
+                                                </div>
+                                            </th>
                                         </tr>
                                     </thead>
-                                    <tbody id="tbodyIssues">
-                                    </tbody>
+                                    <tbody id="tbodyIssues"></tbody>
                                 </table>
                             </div>
                         </div>

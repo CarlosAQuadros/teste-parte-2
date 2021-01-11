@@ -2,62 +2,79 @@ var cards = document.querySelector('#cards')
 var tableContributors = document.querySelector("#tbodyContributors");
 var tableIssues = document.querySelector("#tbodyIssues");
 
+
 function cleanTbody() {
     tableContributors.innerHTML = "";
-    tableIssues.innerHTML = ";"
+    tableIssues.innerHTML = ""
 }
 
 function getRepoName() {
     return repoName = repository['name'].replace(/-/g, " ")
 }
 
-//=========create contributors list
+
+
+function contributorsTemplate(rank) {
+    let tbody = document.createElement('tr')
+    tbody.innerHTML = `<th scope="row"><img src="${contributor['avatar_url']}" alt="" width="32" height="32" " alt="..."></th>
+       <td>${contributor['contributions'] + rank}</td>
+       <td>${contributor['login']}</td>`;
+    tableContributors.appendChild(tbody)
+}
 
 function createContributorsList(repository) {
-    //console.log(repository);
+
     for (contributor of repository) {
-        let tbody = document.createElement('tr')
-
-        tbody.innerHTML = `
-        <th scope="row"><img src="${contributor['avatar_url']}" alt="" width="32" height="32" " alt="..."></th>
-       <td>${contributor['contributions']}</td>
-       <td>${contributor['login']}</td>`;
-        tableContributors.appendChild(tbody)
+        if (contributor['contributions'] >= 500) {
+            contributorsTemplate(`<span style="color: chartreuse; font-size:0.9em; margin-left:10px" > 500+</span>`)
+        }
+    }
+    for (contributor of repository) {
+        if (contributor['contributions'] >= 200 && contributor['contributions'] < 500) {
+            contributorsTemplate(`<span style="color: coral; font-size:0.9em; margin-left:10px" > 200+</span>`)
+        }
+    }
+    for (contributor of repository) {
+        if (contributor['contributions'] >= 100 && contributor['contributions'] < 200) {
+            contributorsTemplate(`<span style="color: yellow; font-size:0.9em; margin-left:10px" > 100+</span>`)
+        }
     }
 }
+function bodyList(issue) {
 
-function createIssuesList(repository) {
-    console.log(repository);
+    let tbody = document.createElement('tr')
+    tbody.setAttribute("class", "d-none")
+    tbody.setAttribute("id", issue['state'])
+
+    tbody.innerHTML = `<th  class="issueState ${issue['state']}" scope="row">#</th>
+    <td id="${issue['url']}">${issue['title']}</td>
+    <td class="issueState${issue['state']}">${issue['state']}</td>`;
+    tableIssues.appendChild(tbody)
+}
+
+function openIssuesList(repository) {
     for (issue of repository) {
-
-        console.log(issue);
-
-        let tbody = document.createElement('tr')
-
-
-        tbody.innerHTML = ` 
-            <th scope="row">#</th>
-         <td>${issue['title']}</td>
-           <td>${issue['state']}</td>`;
-        tableIssues.appendChild(tbody)
+        bodyList(issue)
     }
-
+}
+function closedIssuesList(repository) {
+    for (issue of repository) {
+        bodyList(issue)
+    }
 }
 
-//===============modal creation =============
 function createModal(repository) {
-    //console.log(repository);
     getRepoName()
-
     let repoUrl = repository["url"]
+
     let contributorsURL = repoUrl + '/contributors';
-    //console.log("contributors ==" + contributorsURL);
     repositoryRequest(contributorsURL, createContributorsList);
 
-    //
+    let openIssuesUrl = repoUrl + '/issues?state=open';
+    repositoryRequest(openIssuesUrl, openIssuesList)
 
-    let issuesUrl = repoUrl + '/issues?state=all';
-    repositoryRequest(issuesUrl, createIssuesList)
+     let closedIssuesUrl = repoUrl + '/issues?state=closed';
+    repositoryRequest(closedIssuesUrl, closedIssuesList)
 
     document.querySelector('.modal-title').textContent = repoName;
 
@@ -66,38 +83,33 @@ function createModal(repository) {
 ///=========card creation==============
 
 function createCard(repository) {
-    //get url
+   
     let repoUrl = repository["url"]
-    //get owner img
+ 
     let owner = repository['owner'];
     let ownerAvatar = owner['avatar_url']
 
-    //get repository name
     getRepoName()
 
-    //get repository description
     let repoDescription = repository['description'];
 
-    //create card template
     let div = document.createElement("div")
     div.classList.add("col")
-    div.innerHTML =
-        `
-        <div class="card fade-in-right h-100">
-        <img src="${ownerAvatar}" class="card-img-top " alt="...">
+    div.innerHTML = `<div class="card fade-in-right h-100">
+        <img src="${ownerAvatar}" class="blinkShadow card-img-top " alt="...">
         <div class="card-body">
             <h5 class="card-title fw-bolder text-center text-capitalize">${repoName}</h5>
             <p class="card-text">${repoDescription}</p>
             <a onclick="repositoryRequest(this.id, createModal)" id="${repoUrl}" href="" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal">Go somewhere</a>
         </div>
     </div></a>`
-    cards.appendChild(div)
 
+    cards.appendChild(div)
 }
 
 //=============================================================================
-function repositoryRequest(apiLink, setFuntion) {  /// setFuntion options:  createCard  ||  createModal ///
-    //requisição api github: https://developer.github.com/v3
+function repositoryRequest(apiLink, setFuntion) {  /// setFuntion options:createCard ||createModal ||createContributorsList ||openIssuesList || closedIssuesList ///
+                                                                           
     let ajax = new XMLHttpRequest();
     ajax.open("get", apiLink)
     ajax.send(null)
@@ -114,11 +126,40 @@ function repositoryRequest(apiLink, setFuntion) {  /// setFuntion options:  crea
         }
     }
 }
-repositoryRequest('https://api.github.com/repos/filipedeschamps/meu-primeiro-jogo-multiplayer', createCard)
+repositoryRequest('https://api.github.com/repos/electron/electron', createCard)
 repositoryRequest('https://api.github.com/repos/facebook/react-native', createCard)
 repositoryRequest('https://api.github.com/repos/twbs/bootstrap', createCard)
 
+
 //===========modal=============/
+
+function hideTrs(id) {
+    let hidetrs = document.querySelectorAll(id)
+    for (tr of hidetrs) {
+        tr.classList.add("d-none")
+    }
+}
+function showTrs(id) {
+    let showtrs = document.querySelectorAll(id)
+    for (tr of showtrs) {
+        tr.classList.remove("d-none")
+    }
+}
+function issueVisibility() {
+    var buttonValue = document.querySelector("#selectButton").value
+    if (buttonValue == "open") {
+        hideTrs("#closed")
+        showTrs("#open")
+    } if (buttonValue == "closed") {
+        hideTrs("#open")
+        showTrs("#closed")
+    }
+}
+
+
+
+
+   // issueStateopen.parent
 
 
 
