@@ -15,7 +15,7 @@ body{
     box-shadow:   10px 10px 20px #1a232e,
     -10px -10px 20px #304356;
 }
-.card-body, .navbar a {
+.card-body, .navbar a ,.modal-body{
     color:white;
 }
 .card img{
@@ -37,6 +37,9 @@ body{
 }
 .modal-body{
     background-color: rgba(0, 0, 0, 0.6);
+}
+.second-modal-body{
+    background-color: rgb(37, 51, 66);
 }
 
 .blinkShadow{

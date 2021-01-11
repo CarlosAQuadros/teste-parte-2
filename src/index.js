@@ -2,16 +2,22 @@ var cards = document.querySelector('#cards')
 var tableContributors = document.querySelector("#tbodyContributors");
 var tableIssues = document.querySelector("#tbodyIssues");
 
+var modal_issue = document.querySelector("#modal-issue")
+
 
 function cleanTbody() {
     tableContributors.innerHTML = "";
     tableIssues.innerHTML = ""
+    document.querySelector("#selectButton").value = "selecione"
+}
+function cleanModal() {
+    document.querySelector("#secondModalHeader").innerHTML = "";
+    modal_issue.innerHTML = ""
 }
 
 function getRepoName() {
     return repoName = repository['name'].replace(/-/g, " ")
 }
-
 
 
 function contributorsTemplate(rank) {
@@ -21,7 +27,6 @@ function contributorsTemplate(rank) {
        <td>${contributor['login']}</td>`;
     tableContributors.appendChild(tbody)
 }
-
 function createContributorsList(repository) {
 
     for (contributor of repository) {
@@ -46,10 +51,13 @@ function bodyList(issue) {
     tbody.setAttribute("class", "d-none")
     tbody.setAttribute("id", issue['state'])
 
+
     tbody.innerHTML = `<th  class="issueState ${issue['state']}" scope="row">#</th>
-    <td id="${issue['url']}">${issue['title']}</td>
+    <td onclick="repositoryRequest(id,createSecondModal)" data-bs-toggle="modal" data-bs-target="#secondModal" id="${issue['url']}">${issue['title']}</td>
     <td class="issueState${issue['state']}">${issue['state']}</td>`;
     tableIssues.appendChild(tbody)
+
+    //<td onclick="repositoryRequest('${issue['url']},createSecondModal)" data-bs-toggle="modal" data-bs-target="#secondModal" id="${issue['url']}">${issue['title']}</td>
 }
 
 function openIssuesList(repository) {
@@ -73,19 +81,16 @@ function createModal(repository) {
     let openIssuesUrl = repoUrl + '/issues?state=open';
     repositoryRequest(openIssuesUrl, openIssuesList)
 
-     let closedIssuesUrl = repoUrl + '/issues?state=closed';
+    let closedIssuesUrl = repoUrl + '/issues?state=closed';
     repositoryRequest(closedIssuesUrl, closedIssuesList)
 
     document.querySelector('.modal-title').textContent = repoName;
 
 }
 
-///=========card creation==============
-
 function createCard(repository) {
-   
     let repoUrl = repository["url"]
- 
+
     let owner = repository['owner'];
     let ownerAvatar = owner['avatar_url']
 
@@ -95,30 +100,27 @@ function createCard(repository) {
 
     let div = document.createElement("div")
     div.classList.add("col")
-    div.innerHTML = `<div class="card fade-in-right h-100">
-        <img src="${ownerAvatar}" class="blinkShadow card-img-top " alt="...">
-        <div class="card-body">
-            <h5 class="card-title fw-bolder text-center text-capitalize">${repoName}</h5>
-            <p class="card-text">${repoDescription}</p>
-            <a onclick="repositoryRequest(this.id, createModal)" id="${repoUrl}" href="" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal">Go somewhere</a>
+    div.innerHTML = `<div class="card col h-100">
+        <img src="${ownerAvatar}" class="blinkShadow card-img-top " alt="repository avatar">
+        <div class="card-body text-center">
+            <h5 class="card-title ">${repoName}</h5>
+            <p class="card-text ">${repoDescription}</p>
+            <a onclick="repositoryRequest(this.id, createModal)" id="${repoUrl}" href="" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal">informaçoes</a>
         </div>
     </div></a>`
 
     cards.appendChild(div)
 }
 
-//=============================================================================
 function repositoryRequest(apiLink, setFuntion) {  /// setFuntion options:createCard ||createModal ||createContributorsList ||openIssuesList || closedIssuesList ///
-                                                                           
+
     let ajax = new XMLHttpRequest();
     ajax.open("get", apiLink)
     ajax.send(null)
     ajax.onreadystatechange = function () {
         if (ajax.readyState === 4) {
             if (ajax.status === 200) {
-                //transformar os dados json para array
                 repository = JSON.parse(ajax.responseText);
-
                 setFuntion(repository)
             } else {
                 alert("Repository not found")
@@ -126,12 +128,6 @@ function repositoryRequest(apiLink, setFuntion) {  /// setFuntion options:create
         }
     }
 }
-repositoryRequest('https://api.github.com/repos/electron/electron', createCard)
-repositoryRequest('https://api.github.com/repos/facebook/react-native', createCard)
-repositoryRequest('https://api.github.com/repos/twbs/bootstrap', createCard)
-
-
-//===========modal=============/
 
 function hideTrs(id) {
     let hidetrs = document.querySelectorAll(id)
@@ -156,10 +152,33 @@ function issueVisibility() {
     }
 }
 
+repositoryRequest('https://api.github.com/repos/electron/electron', createCard)
+repositoryRequest('https://api.github.com/repos/facebook/react-native', createCard)
+repositoryRequest('https://api.github.com/repos/twbs/bootstrap', createCard)
 
 
+function createSecondModal(repository) {
+   
+    let issueTitle = repository["title"]
+    let issueBody = repository["body"]
+    let commentsUrl = repository["comments_url"]
 
-   // issueStateopen.parent
+   
 
 
+    let div = document.createElement("div")
+    div.classList.add("modal-body")
+    div.setAttribute("id","shadowModal")
 
+    div.innerHTML = `<div class="modal-header">
+        <h5 class="modal-title text-center font-weight-bold" id="secondModalHeader">${issueTitle}</h5>
+        <button onclick="cleanModal()" id="closeButton" type="button" class="btn btn-danger"
+        data-bs-dismiss="modal"><span>Fechar</span></button>
+        </div>
+      </div><div class="">
+     <div class="second-modal-body">
+            <p class="text-justify">${issueBody}</p>
+        </div>
+    </div></a>`
+    modal_issue.appendChild(div)
+}
