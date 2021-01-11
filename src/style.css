@@ -27,3 +27,8 @@ body{
 #cards a{
    text-decoration: none;
 }
+.tableHeader{
+    border-radius: 50px;
+    color: aliceblue;
+    background-color:var(--github-header-color);
+}

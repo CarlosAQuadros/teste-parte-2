@@ -36,25 +36,45 @@
             <div class="modal-content">
                 <div class="modal-header text-center">
                     <h5 class="modal-title"></h5>
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><span>x</span></button>
+                    <button onclick="cleanTbody()" id="closeButton" type="button" class="btn btn-danger"
+                        data-bs-dismiss="modal"><span>x</span></button>
                 </div>
                 <div class="modal-body">
                     <div class="container-fluid">
                         <div class="row">
-                            <div class="col-7">
-                                <p>Lorem Ipsum é.</p>
-                            </div>
-                            <div class="col-5">
-                                <p>oioio</p>
-                            </div>
+                            <div class="col-3 offset-sm-3">
 
+                                <table class="table caption-top">
+                                    <thead class="tableHeader">
+                                        <tr>
+                                            <th scope="col "> <img src="/images/GitHub-Mark-Light-32px.png" alt=""
+                                                    width="32" height="32" class="d-inline-block align-top"></th>
+                                            <th scope="col">Contribuições</th>
+                                            <th scope="col">github</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbodyContributors">
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-3">
+                                <table class="table caption-top">
+
+                                    <thead class="tableHeader">
+                                        <tr class="">
+                                            <th scope="col"> <img src="/images/GitHub-Mark-Light-32px.png" alt=""
+                                                    width="32" height="32" class="d-inline-block align-top"></th>
+                                            <th scope="col">Issues</th>
+                                            <th scope="col">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbodyIssues">
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-
-
                     </div>
-
                 </div>
-
             </div>
         </div>
     </div>
