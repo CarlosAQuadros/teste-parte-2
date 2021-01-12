@@ -27,21 +27,25 @@ function contributorsTemplate(rank) {
        <td>${contributor['login']}</td>`;
     tableContributors.appendChild(tbody)
 }
+function spanRank(rank, color){
+    return `<span style="color: ${color}; font-size:0.9em; margin-left:10px" > ${rank}+</span>`
+}
+
 function createContributorsList(repository) {
 
     for (contributor of repository) {
         if (contributor['contributions'] >= 500) {
-            contributorsTemplate(`<span style="color: chartreuse; font-size:0.9em; margin-left:10px" > 500+</span>`)
+            contributorsTemplate(spanRank(500,"chartreuse"))
         }
     }
     for (contributor of repository) {
         if (contributor['contributions'] >= 200 && contributor['contributions'] < 500) {
-            contributorsTemplate(`<span style="color: coral; font-size:0.9em; margin-left:10px" > 200+</span>`)
+            contributorsTemplate(spanRank(200, "yellow"))
         }
     }
     for (contributor of repository) {
         if (contributor['contributions'] >= 100 && contributor['contributions'] < 200) {
-            contributorsTemplate(`<span style="color: yellow; font-size:0.9em; margin-left:10px" > 100+</span>`)
+            contributorsTemplate(spanRank(100, 'coral'))
         }
     }
 }
@@ -51,13 +55,11 @@ function bodyList(issue) {
     tbody.setAttribute("class", "d-none")
     tbody.setAttribute("id", issue['state'])
 
-
     tbody.innerHTML = `<th  class="issueState ${issue['state']}" scope="row">#</th>
     <td onclick="repositoryRequest(id,createSecondModal)" data-bs-toggle="modal" data-bs-target="#secondModal" id="${issue['url']}">${issue['title']}</td>
     <td class="issueState${issue['state']}">${issue['state']}</td>`;
     tableIssues.appendChild(tbody)
 
-    //<td onclick="repositoryRequest('${issue['url']},createSecondModal)" data-bs-toggle="modal" data-bs-target="#secondModal" id="${issue['url']}">${issue['title']}</td>
 }
 
 function openIssuesList(repository) {
@@ -152,11 +154,6 @@ function issueVisibility() {
     }
 }
 
-repositoryRequest('https://api.github.com/repos/electron/electron', createCard)
-repositoryRequest('https://api.github.com/repos/facebook/react-native', createCard)
-repositoryRequest('https://api.github.com/repos/twbs/bootstrap', createCard)
-
-
 function createSecondModal(repository) {
    
     let issueTitle = repository["title"]
@@ -176,9 +173,13 @@ function createSecondModal(repository) {
         data-bs-dismiss="modal"><span>Fechar</span></button>
         </div>
       </div><div class="">
-     <div class="second-modal-body">
-            <p class="text-justify">${issueBody}</p>
+        <div class="second-modal-body">
+        <p class="text-justify blockquote text-break">${issueBody}</p>
         </div>
     </div></a>`
     modal_issue.appendChild(div)
 }
+
+repositoryRequest('https://api.github.com/repos/electron/electron', createCard)
+repositoryRequest('https://api.github.com/repos/facebook/react-native', createCard)
+repositoryRequest('https://api.github.com/repos/twbs/bootstrap', createCard)
